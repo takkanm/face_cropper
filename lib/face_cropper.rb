@@ -1,7 +1,7 @@
 require "face_cropper/version"
 require 'aws-sdk'
 require 'mini_magick'
-require 'yaml'
+
 
 class FaceCropper
   def initialize(params)
@@ -12,7 +12,7 @@ class FaceCropper
 
   def crop_and_upload!
     faces = detect_faces!
-    puts faces.to_yaml
+
     tmp_original_image_path = download_original_image!
     upload_faces!(faces, tmp_original_image_path)
   end
