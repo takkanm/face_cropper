@@ -2,7 +2,6 @@ require "face_cropper/version"
 require 'aws-sdk'
 require 'mini_magick'
 
-
 class FaceCropper
   def initialize(params)
     @from_bucket = params[:from_bucket]
