@@ -3,6 +3,26 @@ require 'aws-sdk'
 require 'mini_magick'
 
 class FaceCropper
+  class AwsRekognitionFaceDetector
+    def initialize(bucket:, image_key:)
+      @bucket     = bucket
+      @imaget_key = image_key
+    end
+
+    def dcetect!
+      rekognition = Aws::Rekognition::Client.new(region: 'us-east-1')
+
+      rekognition.detect_faces(
+        image: {
+          s3_object: {
+            bucket: @from_bucket,
+            name:   @image_key
+          }
+        }
+      )
+    end
+  end
+
   def initialize(params)
     @from_bucket = params[:from_bucket]
     @to_bucket   = params[:to_bucket]
@@ -19,16 +39,8 @@ class FaceCropper
   private
 
   def detect_faces!
-    rekognition = Aws::Rekognition::Client.new(region: 'us-east-1')
-
-    rekognition.detect_faces(
-      image: {
-        s3_object: {
-          bucket: @from_bucket,
-          name:   @image_key
-        }
-      }
-    )
+    detector = AwsRekognitionFaceDetector.new(bucket: @from_bucket, image_key: @image_key)
+    detector.dcetect!
   end
 
   def download_original_image!
