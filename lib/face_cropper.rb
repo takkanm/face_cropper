@@ -1,6 +1,7 @@
 require "face_cropper/version"
 require 'aws-sdk'
 require 'mini_magick'
+require 'pp'
 
 class FaceCropper
   class AwsRekognitionFaceDetector
@@ -32,11 +33,17 @@ class FaceCropper
   def crop_and_upload!
     faces = detect_faces!
 
+    debug_print(faces)
+
     tmp_original_image_path = download_original_image!
     upload_faces!(faces, tmp_original_image_path)
   end
 
   private
+
+  def debug_print(faces)
+    pp faces if ENV['API_DEBUG']
+  end
 
   def detect_faces!
     detector = AwsRekognitionFaceDetector.new(bucket: @from_bucket, image_key: @image_key)
