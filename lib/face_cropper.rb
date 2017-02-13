@@ -1,6 +1,7 @@
 require "face_cropper/version"
 require "face_cropper/aws_rekognition_face_detector"
 require 'mini_magick'
+require 'aws-sdk'
 
 class FaceCropper
   def initialize(params)
