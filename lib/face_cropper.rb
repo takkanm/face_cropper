@@ -15,7 +15,7 @@ class FaceCropper
     debug_print(faces)
 
     tmp_original_image_path = download_original_image!
-    upload_faces!(faces, tmp_original_image_path)
+    crop_faces!(faces, tmp_original_image_path)
   end
 
   private
@@ -36,7 +36,7 @@ class FaceCropper
     end
   end
 
-  def upload_faces!(faces, image_path)
+  def crop_faces!(faces, image_path)
     faces.face_details.each_with_index do |detail, index|
       image = MiniMagick::Image.open(image_path)
 
