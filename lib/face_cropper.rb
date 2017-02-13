@@ -50,7 +50,11 @@ class FaceCropper
       image.crop(crop_params)
       crop_file = "#{crop_params}_#{@image_key}"
       image.write(crop_file)
-      s3_client.put_object(bucket: @to_bucket, key: crop_file, body: File.read(crop_file))
+
+      if @to_bucket
+        s3_client.put_object(bucket: @to_bucket, key: crop_file, body: File.read(crop_file))
+        File.unlink crop_file
+      end
     end
   end
 
