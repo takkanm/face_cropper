@@ -4,6 +4,39 @@ require 'mini_magick'
 require 'aws-sdk'
 
 class FaceCropper
+  class FaceBox
+    attr_reader :top, :left, :height, :width
+
+    def initialize(top: , left: , height: , width:)
+      @top    = top
+      @left   = left
+      @height = height
+      @width  = width
+    end
+
+    def crop_face!(image_path)
+      image = MiniMagick::Image.open(image_path)
+      position = calculate_position(image_width: image.width, image_height: image.height)
+
+      crop_params = "#{position[:width]}x#{position[:height]}+#{position[:y]}+#{position[:x]}"
+
+      image.crop(crop_params)
+      crop_file = "#{crop_params}_#{@image_key}"
+      image.write(crop_file)
+
+      crop_file
+    end
+
+    def calculate_position(image_width: , image_height:)
+      {
+        width:  (@width  * image_width).to_i,
+        height: (@height * image.height).to_i,
+        x:      (@top    * image.height).to_i,
+        y:      (@left   * image.width).to_i
+      }
+    end
+  end
+
   def initialize(params)
     @from_bucket = params[:from_bucket]
     @to_bucket   = params[:to_bucket]
@@ -39,17 +72,13 @@ class FaceCropper
 
   def crop_faces!(faces, image_path)
     faces.face_details.each_with_index do |detail, index|
-      image = MiniMagick::Image.open(image_path)
-
-      w = detail.bounding_box.width  * image.width
-      h = detail.bounding_box.height * image.height
-      x = detail.bounding_box.top    * image.height
-      y = detail.bounding_box.left   * image.width
-      crop_params = "#{w.to_i}x#{h.to_i}+#{y.to_i}+#{x.to_i}"
-
-      image.crop(crop_params)
-      crop_file = "#{crop_params}_#{@image_key}"
-      image.write(crop_file)
+      face_box = FaceBox.new(
+        width:  detail.bounding_box.width,
+        height: detail.bounding_box.height,
+        top:    detail.bounding_box.top,
+        left:   detail.bounding_box.left
+      )
+      crop_file = face_box.crop_face!(image_path)
 
       if @to_bucket
         s3_client.put_object(bucket: @to_bucket, key: crop_file, body: File.read(crop_file))
