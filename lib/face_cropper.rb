@@ -41,10 +41,11 @@ class FaceCropper
     @from_bucket = params[:from_bucket]
     @to_bucket   = params[:to_bucket]
     @image_key   = params[:image_key]
+    @face_boxis  = params[:face_details]
   end
 
   def crop_and_upload!
-    faces = detect_faces!
+    faces = @face_boxis || detect_faces!
 
     debug_print(faces)
 
