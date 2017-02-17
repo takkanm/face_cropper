@@ -47,8 +47,6 @@ class FaceCropper
   def crop_and_upload!
     faces = @face_boxis || detect_faces!
 
-    debug_print(faces)
-
     tmp_original_image_path = download_original_image!
     crop_faces!(faces, tmp_original_image_path)
   end
@@ -61,7 +59,7 @@ class FaceCropper
 
   def detect_faces!
     detector = AwsRekognitionFaceDetector.new(bucket: @from_bucket, image_key: @image_key)
-    detector.dcetect!
+    detector.dcetect!.tap {|r| debug_print(r) }
   end
 
   def download_original_image!
