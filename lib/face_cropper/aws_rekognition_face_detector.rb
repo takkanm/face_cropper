@@ -3,13 +3,14 @@ require 'pp'
 
 class FaceCropper
   class AwsRekognitionFaceDetector
-    def initialize(bucket:, image_key:)
+    def initialize(bucket:, image_key:, region:)
       @bucket     = bucket
       @imaget_key = image_key
+      @region     = region
     end
 
     def dcetect!
-      rekognition = Aws::Rekognition::Client.new(region: 'us-east-1')
+      rekognition = Aws::Rekognition::Client.new(region: @region)
 
       rekognition.detect_faces(
         image: {

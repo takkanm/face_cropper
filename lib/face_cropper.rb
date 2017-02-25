@@ -26,7 +26,7 @@ class FaceCropper
   end
 
   def detect_faces!
-    detector = AwsRekognitionFaceDetector.new(bucket: @from_bucket, image_key: @image_key)
+    detector = AwsRekognitionFaceDetector.new(bucket: @from_bucket, image_key: @image_key, region: @region)
     detector.dcetect!.tap {|r| debug_print(r) }
   end
 
