@@ -11,7 +11,7 @@ class FaceCropper
     @face_boxis  = params[:face_details]
   end
 
-  def crop_and_upload!
+  def crop!
     faces = @face_boxis || detect_faces!
 
     tmp_original_image_path = download_original_image!
