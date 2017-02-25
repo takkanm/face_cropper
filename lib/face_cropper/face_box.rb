@@ -4,7 +4,7 @@ class FaceCropper
   class FaceBox
     attr_reader :top, :left, :height, :width
 
-    def initialize(top: , left: , height: , width:, margin: 0)
+    def initialize(top: , left: , height: , width: , margin: 0)
       @top    = top
       @left   = left
       @height = height
