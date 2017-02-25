@@ -9,6 +9,7 @@ class FaceCropper
     @to_bucket   = params[:to_bucket]
     @image_key   = params[:image_key]
     @face_boxis  = params[:face_details]
+    @region      = params[:region] || 'us-east-1'
   end
 
   def crop!
@@ -54,6 +55,6 @@ class FaceCropper
   end
 
   def s3_client
-    @s3_client ||= Aws::S3::Client.new(region: 'us-east-1')
+    @s3_client ||= Aws::S3::Client.new(region: @region)
   end
 end
